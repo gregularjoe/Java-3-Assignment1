@@ -10,14 +10,14 @@ import java.sql.SQLException;
  */
 public class MariaDBProperties {
 
-    public static final String DATABASE_URL = "jdbc:mariadb://localhost:3306";
+    public static final String DATABASE_URL = "jdbc:mariadb://localhost:3308";
 
     public static final String DATABASE_USER = "root";
 
     //TODO Update this with your Password!
     public static final String DATABASE_PASSWORD = "root";
 
-    public static final String DATABASE_URL_COMPLETE = "jdbc:mariadb://localhost:3306?user="+ DATABASE_USER +"&password=" + DATABASE_PASSWORD;
+    public static final String DATABASE_URL_COMPLETE = "jdbc:mariadb://localhost:3308?user="+ DATABASE_USER +"&password=" + DATABASE_PASSWORD;
 
     /**
      * Register the driver using two options - Class.forName and Driver class
