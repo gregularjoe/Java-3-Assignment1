@@ -5,22 +5,17 @@ import Assignment1.JDBC.MariaDBProperties;
 import java.sql.*;
 import java.util.*;
 
-/**
- * Manages the connection to the Book Database and operations related to books and authors.
- */
-public class BookDatabaseManager {
+public class BookDatabaseManager1 {
     private static final String URL = MariaDBProperties.DATABASE_URL ;
     private static final String USER = MariaDBProperties.DATABASE_USER;
     private static final String PASSWORD = MariaDBProperties.DATABASE_PASSWORD;
+
 
     private Connection connection;
     private final List<Book> books;
     private final List<Author> authors;
 
-    /**
-     * Initializes the BookDatabaseManager, connects to the database, and initializes the local lists.
-     */
-    public BookDatabaseManager() {
+    public BookDatabaseManager1() {
         books = new ArrayList<>();
         authors = new ArrayList<>();
 
@@ -31,9 +26,7 @@ public class BookDatabaseManager {
         }
     }
 
-    /**
-     * Closes the connection to the database if it is open.
-     */
+    // Close connection method
     public void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {
@@ -44,11 +37,6 @@ public class BookDatabaseManager {
         }
     }
 
-    /**
-     * Creates a new book record in the database and adds it to the local list. If the book already exists, it skips insertion.
-     *
-     * @param book The book to be added to the database.
-     */
     public void createBook(Book book) {
         // Check if book already exists
         if (getBookByISBN(book.getIsbn()) != null) {
@@ -79,13 +67,6 @@ public class BookDatabaseManager {
     }
 
 
-
-
-    /**
-     * Creates a new author record in the database and adds it to the local list. If the author already exists, it skips insertion.
-     *
-     * @param author The author to be added to the database.
-     */
     public void createAuthor(Author author) {
         // Check if author already exists
         if (getAuthorByID(author.getAuthorID()) != null) {
@@ -109,12 +90,7 @@ public class BookDatabaseManager {
         }
     }
 
-    /**
-     * Adds a relationship between a book and an author in the authorisbn table.
-     *
-     * @param book The book for the relationship.
-     * @param author The author for the relationship.
-     */
+
     private void addBookAuthorRelation(Book book, Author author) {
         String sql = "INSERT INTO authorisbn (authorID, isbn) VALUES (?, ?)";
 
@@ -129,13 +105,6 @@ public class BookDatabaseManager {
     }
 
 
-
-    /**
-     * Retrieves a Book object by its ISBN.
-     *
-     * @param isbn The ISBN of the book to retrieve.
-     * @return The Book object corresponding to the provided ISBN, or null if not found.
-     */
     public Book getBookByISBN(String isbn) {
         String sql = "SELECT * FROM titles WHERE isbn = ?";
         Book book = null;
@@ -160,12 +129,6 @@ public class BookDatabaseManager {
         return book;
     }
 
-    /**
-     * Retrieves an Author object by its ID.
-     *
-     * @param authorID The ID of the author to retrieve.
-     * @return The Author object corresponding to the provided ID, or null if not found.
-     */
     public Author getAuthorByID(int authorID) {
         String sql = "SELECT * FROM authors WHERE authorID = ?";
         Author author = null;
@@ -190,11 +153,6 @@ public class BookDatabaseManager {
         return author;
     }
 
-    /**
-     * Retrieves a list of all books.
-     *
-     * @return A list of all Book objects.
-     */
     public List<Book> getAllBooks() {
         String sql = "SELECT * FROM titles";
         List<Book> books = new ArrayList<>();
@@ -220,12 +178,6 @@ public class BookDatabaseManager {
         return books;
     }
 
-
-    /**
-     * Retrieves a list of all authors.
-     *
-     * @return A list of all Author objects.
-     */
     public List<Author> getAllAuthors() {
         String sql = "SELECT * FROM authors";
         List<Author> authors = new ArrayList<>();
@@ -251,12 +203,7 @@ public class BookDatabaseManager {
         return authors;
     }
 
-    /**
-     * Retrieves a list of authors for a given ISBN.
-     *
-     * @param isbn The ISBN of the book.
-     * @return A list of Author objects associated with the provided ISBN.
-     */
+
     private List<Author> getAuthorsByISBN(String isbn) {
         String sql = "SELECT a.authorID, a.firstName, a.lastName FROM authors a " +
                 "JOIN authorisbn ai ON a.authorID = ai.authorID WHERE ai.isbn = ?";
@@ -277,12 +224,6 @@ public class BookDatabaseManager {
         return authors;
     }
 
-    /**
-     * Retrieves a list of books for a given author ID.
-     *
-     * @param authorID The ID of the author.
-     * @return A list of Book objects associated with the provided author ID.
-     */
     private List<Book> getBooksByAuthorID(int authorID) {
         String sql = "SELECT b.isbn, b.title, b.editionNumber, b.copyright FROM titles b " +
                 "JOIN authorisbn ai ON b.isbn = ai.isbn WHERE ai.authorID = ?";
@@ -303,11 +244,7 @@ public class BookDatabaseManager {
         return books;
     }
 
-    /**
-     * Deletes a book and its related author associations from the database.
-     *
-     * @param isbn The ISBN of the book to delete.
-     */
+
     public void deleteBook(String isbn) {
         // First, delete relationships in authorisbn table
         deleteBookAuthorRelations(isbn);
@@ -327,11 +264,7 @@ public class BookDatabaseManager {
         }
     }
 
-    /**
-     * Deletes an author and its related book associations from the database.
-     *
-     * @param authorID The ID of the author to delete.
-     */
+
     public void deleteAuthor(int authorID) {
         // First, delete relationships in authorisbn table
         deleteAuthorBookRelations(authorID);
@@ -351,11 +284,7 @@ public class BookDatabaseManager {
         }
     }
 
-    /**
-     * Deletes the relationships between a book and its authors in the authorisbn table.
-     *
-     * @param isbn The ISBN of the book whose relations are to be deleted.
-     */
+
     private void deleteBookAuthorRelations(String isbn) {
         String sql = "DELETE FROM authorisbn WHERE isbn = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -367,11 +296,6 @@ public class BookDatabaseManager {
         }
     }
 
-    /**
-     * Deletes the relationships between an author and their books in the authorisbn table.
-     *
-     * @param authorID The ID of the author whose relations are to be deleted.
-     */
     private void deleteAuthorBookRelations(int authorID) {
         String sql = "DELETE FROM authorisbn WHERE authorID = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -382,7 +306,6 @@ public class BookDatabaseManager {
             e.printStackTrace();
         }
     }
-
 
 
 

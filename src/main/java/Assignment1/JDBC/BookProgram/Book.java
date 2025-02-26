@@ -1,19 +1,27 @@
 package Assignment1.JDBC.BookProgram;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+
 import java.util.ArrayList;
-import Assignment1.JDBC.MariaDBProperties;
 import java.util.List;
 
+/**
+ * Represents a Book with an ISBN, title, edition number, copyright, and a list of authors.
+ */
 public class Book {
-    private int isbn;
+    private String isbn;
     private String title;
     private int editionNumber;
     private String copyright;
     private List<Author> authorList;
 
-    public Book(int isbn, String title, int editionNumber, String copyright) {
+    /**
+     * Constructs a new Book with the specified details.
+     *
+     * @param isbn the ISBN of the book
+     * @param title the title of the book
+     * @param editionNumber the edition number of the book
+     * @param copyright the copyright year of the book
+     */
+    public Book(String isbn, String title, int editionNumber, String copyright) {
         this.isbn = isbn;
         this.title = title;
         this.editionNumber = editionNumber;
@@ -21,54 +29,107 @@ public class Book {
         this.authorList = new ArrayList<>();
     }
 
-    // Getters and setters
-    public int getIsbn() {
+    /**
+     * Returns the ISBN of the book.
+     *
+     * @return the ISBN of the book
+     */
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(int isbn) {
+    /**
+     * Sets the ISBN of the book.
+     *
+     * @param isbn the new ISBN of the book
+     */
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 
+    /**
+     * Returns the title of the book.
+     *
+     * @return the title of the book
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Sets the title of the book.
+     *
+     * @param title the new title of the book
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Returns the edition number of the book.
+     *
+     * @return the edition number of the book
+     */
     public int getEditionNumber() {
         return editionNumber;
     }
 
+    /**
+     * Sets the edition number of the book.
+     *
+     * @param editionNumber the new edition number of the book
+     */
     public void setEditionNumber(int editionNumber) {
         this.editionNumber = editionNumber;
     }
 
+    /**
+     * Returns the copyright year of the book.
+     *
+     * @return the copyright year of the book
+     */
     public String getCopyright() {
         return copyright;
     }
 
+    /**
+     * Sets the copyright year of the book.
+     *
+     * @param copyright the new copyright year of the book
+     */
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
 
+    /**
+     * Returns the list of authors for the book.
+     *
+     * @return the list of authors for the book
+     */
     public List<Author> getAuthorList() {
         return authorList;
     }
 
+    /**
+     * Adds an author to the book. Also ensures the book is added to the author's book list.
+     *
+     * @param author the author to be added
+     */
     public void addAuthor(Author author) {
-        // Check if author is already in the list to avoid circular adds
         if (!authorList.contains(author)) {
             authorList.add(author);
-            // Add this book to the author's book list if not already there
             if (!author.getBookList().contains(this)) {
                 author.addBook(this);
             }
         }
     }
 
+    /**
+     * Returns a string representation of the book, including its ISBN, title, edition number, copyright year,
+     * and list of authors.
+     *
+     * @return a string representation of the book
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -93,16 +154,17 @@ public class Book {
         return sb.toString();
     }
 
+    /**
+     * Checks if this book is equal to another object. Two books are considered equal if they have the same ISBN.
+     *
+     * @param obj the object to compare with
+     * @return true if the books have the same ISBN, false otherwise
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Book book = (Book) obj;
-        return isbn == book.isbn;
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(isbn);
+        return isbn.equals(book.isbn);
     }
 }
